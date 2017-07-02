@@ -84,7 +84,8 @@ public class XunProxySpider extends BaseSpider {
     }
 
     protected boolean checkBlockAndFailThisSpider(String s) {
-        return true;
+        LogManager.info(s);
+        return false;  //暂时认为不会被屏蔽
     }
 
     public String name() {

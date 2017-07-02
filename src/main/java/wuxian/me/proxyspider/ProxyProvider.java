@@ -18,14 +18,17 @@ public class ProxyProvider implements IProvider<String> {
     public ProxyProvider() {
     }
 
-    //Fixme:现在的序列化能力太弱了 返回只能是string....
     public String provide() {
-        LogManager.info("ProxyProvider.provide");
+        LogManager.info("in func ProxyProvider.provide");
         XunData xunData = XunProxyPool.getXunProxy();
         if (xunData == null) {
+            LogManager.info("provide return null");
             return null;
         }
 
-        return GsonProvider.gson().toJson(new Proxy(xunData.ip, Integer.parseInt(xunData.port)));
+        Proxy proxy = new Proxy(xunData.ip, Integer.parseInt(xunData.port));
+        LogManager.info("provide return " + proxy.toString());
+
+        return GsonProvider.gson().toJson(proxy);
     }
 }

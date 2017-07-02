@@ -2,9 +2,17 @@ package wuxian.me.proxyspider.xun;
 
 import com.sun.istack.internal.NotNull;
 import okhttp3.Headers;
+import wuxian.me.spidercommon.log.LogManager;
 import wuxian.me.spidercommon.util.FileUtil;
+import wuxian.me.spidersdk.BaseSpider;
+import wuxian.me.spidersdk.IJobManager;
 import wuxian.me.spidersdk.anti.UserAgentManager;
+import wuxian.me.spidersdk.job.IJob;
+import wuxian.me.spidersdk.job.JobProvider;
+import wuxian.me.spidersdk.manager.JobManagerFactory;
 import wuxian.me.spidersdk.util.CookieManager;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 import static wuxian.me.spidercommon.util.FileUtil.getCurrentPath;
 
@@ -12,6 +20,52 @@ import static wuxian.me.spidercommon.util.FileUtil.getCurrentPath;
  * Created by wuxian on 20/6/2017.
  */
 public class Helper {
+
+    private static AtomicLong SCHEDULE_TIME = new AtomicLong(-1);
+
+    public static void recordTime() {
+        SCHEDULE_TIME = new AtomicLong(System.currentTimeMillis());
+    }
+
+    public static boolean shouldDispatchAotherRequest() {
+        if (SCHEDULE_TIME.get() == -1) {
+            return true;
+        }
+
+        if (System.currentTimeMillis() - SCHEDULE_TIME.get() >= 1000 * 60 * 3) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static void dispatchSpider(@NotNull BaseSpider spider) {
+        IJob job = JobProvider.getJob();
+        job.setRealRunnable(spider);
+        jobManager().putJob(job);
+    }
+
+    public static void dispatchXunSpider() {
+
+        if (shouldDispatchAotherRequest()) {
+
+            LogManager.info("success dispatchXunSpider");
+            XunProxySpider spider = new XunProxySpider();
+            dispatchSpider(spider);
+            recordTime();
+        }
+    }
+
+    private static IJobManager sJobManager;
+
+    private static IJobManager jobManager() {
+        if (sJobManager == null) {
+            synchronized (Helper.class) {
+                sJobManager = JobManagerFactory.getJobManager();
+            }
+        }
+        return sJobManager;
+    }
 
     private static final String HEADER_REFERER = "Referer";
     private static Headers.Builder builder;

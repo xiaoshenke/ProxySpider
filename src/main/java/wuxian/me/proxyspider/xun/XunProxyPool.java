@@ -1,6 +1,10 @@
 package wuxian.me.proxyspider.xun;
 
+import wuxian.me.spidercommon.log.LogManager;
+
+import java.util.HashSet;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
@@ -12,19 +16,22 @@ public class XunProxyPool {
     }
 
     private static Queue<XunData> xunProxyQueue = new ArrayBlockingQueue<XunData>(50);
+    private static Set<XunData> xunDataSet = new HashSet<XunData>();
 
     public static boolean put(XunData xunData) {
-        if (xunData == null) {
+        if (xunData == null || xunDataSet.contains(xunData)) {
             return false;
         }
 
         xunProxyQueue.add(xunData);
-
+        xunDataSet.add(xunData);
         return true;
     }
 
     public static XunData getXunProxy() {
         if (xunProxyQueue.isEmpty()) {
+            LogManager.info("XunProxyPool is empty,try to dispatch XunSpider");
+            Helper.dispatchXunSpider();
             return null;
         }
 
