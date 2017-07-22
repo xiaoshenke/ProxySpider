@@ -26,8 +26,5 @@ public class Main {
         //Helper.dispatchXunSpider();
 
         Helper.dispatchSpider(new Ip181Spider());
-        String s = "普匿";
-
-        //LogManager.info(URLEncoder.encode(s, "GB2312"));
     }
 }
