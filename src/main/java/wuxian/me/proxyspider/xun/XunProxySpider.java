@@ -7,6 +7,8 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
+import wuxian.me.proxyspider.Helper;
+import wuxian.me.proxyspider.ProxySpiderCallback;
 import wuxian.me.spidercommon.log.LogManager;
 import wuxian.me.spidercommon.model.HttpUrlNode;
 import wuxian.me.spidersdk.BaseSpider;
@@ -17,6 +19,8 @@ import java.util.List;
 
 /**
  * Created by wuxian on 20/6/2017.
+ * <p>
+ * http://www.xdaili.cn/ipagent//freeip/getFreeIps
  */
 public class XunProxySpider extends BaseSpider {
 
@@ -38,7 +42,7 @@ public class XunProxySpider extends BaseSpider {
     }
 
     protected SpiderCallback getCallback() {
-        return new XunSpiderCallback(this);
+        return new ProxySpiderCallback(this);
     }
 
     protected Request buildRequest() {

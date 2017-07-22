@@ -1,5 +1,6 @@
 package wuxian.me.proxyspider;
 
+import wuxian.me.proxyspider.ip181.Ip181Pool;
 import wuxian.me.proxyspider.xun.XunData;
 import wuxian.me.proxyspider.xun.XunProxyPool;
 import wuxian.me.spidercommon.log.LogManager;
@@ -21,12 +22,19 @@ public class ProxyProvider implements IProvider<String> {
     public String provide() {
         LogManager.info("in func ProxyProvider.provide");
         XunData xunData = XunProxyPool.getXunProxy();
-        if (xunData == null) {
-            LogManager.info("provide return null");
-            return null;
+        if (xunData != null) {
+            Proxy proxy = new Proxy(xunData.ip, Integer.parseInt(xunData.port));
+            LogManager.info("provide return " + proxy.toString());
+
+            return GsonProvider.gson().toJson(proxy);
         }
 
-        Proxy proxy = new Proxy(xunData.ip, Integer.parseInt(xunData.port));
+        Proxy proxy = Ip181Pool.getProxy();
+        if (proxy == null) {
+            LogManager.info("no proxy available,return null");
+
+            return null;
+        }
         LogManager.info("provide return " + proxy.toString());
 
         return GsonProvider.gson().toJson(proxy);

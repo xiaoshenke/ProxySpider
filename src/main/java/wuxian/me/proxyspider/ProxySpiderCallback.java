@@ -1,4 +1,4 @@
-package wuxian.me.proxyspider.xun;
+package wuxian.me.proxyspider;
 
 import com.sun.istack.internal.NotNull;
 import okhttp3.Call;
@@ -13,9 +13,9 @@ import java.io.IOException;
 /**
  * Created by wuxian on 20/6/2017.
  */
-public class XunSpiderCallback extends SpiderCallback {
+public class ProxySpiderCallback extends SpiderCallback {
 
-    public XunSpiderCallback(@NotNull BaseSpider spider) {
+    public ProxySpiderCallback(@NotNull BaseSpider spider) {
         super(spider);
     }
 

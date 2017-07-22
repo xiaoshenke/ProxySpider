@@ -1,7 +1,8 @@
-package wuxian.me.proxyspider.xun;
+package wuxian.me.proxyspider;
 
 import com.sun.istack.internal.NotNull;
 import okhttp3.Headers;
+import wuxian.me.proxyspider.xun.XunProxySpider;
 import wuxian.me.spidercommon.log.LogManager;
 import wuxian.me.spidercommon.util.FileUtil;
 import wuxian.me.spidersdk.BaseSpider;
@@ -39,7 +40,7 @@ public class Helper {
         return false;
     }
 
-    private static void dispatchSpider(@NotNull BaseSpider spider) {
+    public static void dispatchSpider(@NotNull BaseSpider spider) {
         IJob job = JobProvider.getJob();
         job.setRealRunnable(spider);
         jobManager().putJob(job);
@@ -49,7 +50,7 @@ public class Helper {
 
         if (shouldDispatchAotherRequest()) {
 
-            LogManager.info("success dispatchXunSpider");
+            //LogManager.info("success dispatchXunSpider");
             XunProxySpider spider = new XunProxySpider();
             dispatchSpider(spider);
             recordTime();
@@ -104,5 +105,10 @@ public class Helper {
     public static Headers getXunSpiderHeader(@NotNull String reference) {
         builder.set("Host", "www.xdaili.cn");
         return getHeaderBySpecifyRef(reference, "Xun");
+    }
+
+    public static Headers getIp181SpiderHeader(@NotNull String reference) {
+        builder.set("Host", "www.ip181.com");
+        return getHeaderBySpecifyRef(reference, "ip181");
     }
 }
