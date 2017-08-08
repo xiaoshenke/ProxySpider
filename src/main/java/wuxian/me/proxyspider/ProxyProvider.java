@@ -24,8 +24,6 @@ public class ProxyProvider implements IProvider<String> {
         XunData xunData = XunProxyPool.getXunProxy();
         if (xunData != null) {
             Proxy proxy = new Proxy(xunData.ip, Integer.parseInt(xunData.port));
-            LogManager.info("provide return " + proxy.toString());
-
             return GsonProvider.gson().toJson(proxy);
         }
 

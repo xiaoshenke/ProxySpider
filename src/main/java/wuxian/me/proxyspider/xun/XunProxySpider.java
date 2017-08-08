@@ -20,6 +20,7 @@ import java.util.List;
 /**
  * Created by wuxian on 20/6/2017.
  * <p>
+ * http://www.xdaili.cn/freeproxy.html
  * http://www.xdaili.cn/ipagent//freeip/getFreeIps
  */
 public class XunProxySpider extends BaseSpider {
