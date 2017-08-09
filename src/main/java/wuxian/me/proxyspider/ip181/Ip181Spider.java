@@ -20,6 +20,8 @@ import wuxian.me.spidersdk.SpiderCallback;
 import wuxian.me.spidersdk.anti.BytesCharsetDetector;
 import wuxian.me.spidersdk.anti.MaybeBlockedException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
@@ -103,33 +105,39 @@ public class Ip181Spider extends BaseSpider {
 
     }
 
-    private void parseIPList(String data) throws MaybeBlockedException, ParserException {
+    private List<Proxy> parseIPList(String data) throws MaybeBlockedException, ParserException {
         Parser parser = new Parser(data);
         parser.setEncoding("gb2312");
         HasAttributeFilter filter = new HasAttributeFilter("class", "table table-hover panel-default panel ctable");
         Node node = firstChildIfNullThrow(parser.extractAllNodesThatMatch(filter));
 
         NodeList list = ParsingUtil.childrenOfType(node.getChildren(), TableRow.class);
+
+        List<Proxy> proxyList = new ArrayList<Proxy>();
         for (int i = 0; i < list.size(); i++) {
-            parseIP(list.elementAt(i));
+            Proxy proxy = parseIP(list.elementAt(i));
+
+            if (proxy != null && !proxyList.contains(proxy)) {
+                proxyList.add(proxy);
+            }
         }
+        return proxyList;
     }
 
-    private void parseIP(Node node) throws MaybeBlockedException
+    private Proxy parseIP(Node node) throws MaybeBlockedException
             , ParserException {
 
         String s = node.toPlainTextString().trim();
         String ip = matchedString(IP_PATTERN, s);
         if (ip == null) {
-            return;
+            return null;
         }
         int index = s.indexOf(ip);
         if (index == -1) {
-            return;
+            return null;
         }
 
-        Ip181Pool.put(new Proxy(matchedString(IP_PATTERN, s), matchedInteger(PORT_PATTERN, s.substring(index + ip.length()))));
-
+        return new Proxy(matchedString(IP_PATTERN, s), matchedInteger(PORT_PATTERN, s.substring(index + ip.length())));
     }
 
     public static final String REG_IP = "[0-9.]+(?=\\s)";
@@ -150,9 +158,18 @@ public class Ip181Spider extends BaseSpider {
         try {
             parseTime(data);
 
-            Ip181Pool.clear();
 
-            parseIPList(data);
+            List<Proxy> list = parseIPList(data);
+
+            if (list.size() == 0) {
+                throw new MaybeBlockedException();
+            }
+
+            Ip181Pool.clear();
+            for (Proxy p : list) {
+                Ip181Pool.put(p);
+            }
+
 
         } catch (MaybeBlockedException e) {
             return BaseSpider.RET_MAYBE_BLOCK;
