@@ -32,7 +32,7 @@ public class XunProxyPool {
     public static XunData getXunProxy() {
         LogManager.info("xunproxy pool,current size:" + xunProxyQueue.size());
         if (xunProxyQueue.isEmpty()) {
-            LogManager.info("Ip181Pool is empty,try to dispatch XunSpider");
+            LogManager.info("xunPool is empty,try to dispatch XunSpider");
             Helper.dispatchXunSpider();
             return null;
         }

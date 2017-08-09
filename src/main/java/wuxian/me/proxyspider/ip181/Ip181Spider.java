@@ -17,6 +17,7 @@ import wuxian.me.spidercommon.util.ParsingUtil;
 import wuxian.me.spidercommon.util.StringUtil;
 import wuxian.me.spidersdk.BaseSpider;
 import wuxian.me.spidersdk.SpiderCallback;
+import wuxian.me.spidersdk.anti.BytesCharsetDetector;
 import wuxian.me.spidersdk.anti.MaybeBlockedException;
 
 import java.util.Timer;
@@ -30,7 +31,6 @@ import static wuxian.me.spidercommon.util.ParsingUtil.matchedString;
 /**
  * Created by wuxian on 22/7/2017.
  * http://www.ip181.com/
- * Fixme: encoding... IP��ַ�˿������ȼ�����������Ӧʱ������λ�������֤ʱ��
  */
 public class Ip181Spider extends BaseSpider {
 
@@ -65,15 +65,13 @@ public class Ip181Spider extends BaseSpider {
     }
 
     private void parseTime(String data) throws MaybeBlockedException, ParserException {
+
         Parser parser = new Parser(data);
         parser.setEncoding("gb2312");
         HasAttributeFilter filter = new HasAttributeFilter("class", "gx");
         Node node = firstChildIfNullThrow(parser.extractAllNodesThatMatch(filter));
 
         LogManager.info("time: " + StringUtil.removeAllBlanks(node.toPlainTextString()));
-        LogManager.info("minute:" + matchedString(MINUTE_PATTERN, node.toPlainTextString()));
-        LogManager.info("seconds:" + matchedString(SECONDE, node.toPlainTextString()));
-
         Integer minute = matchedInteger(MINUTE_PATTERN, node.toPlainTextString());
         Integer second = matchedInteger(SECONDE, node.toPlainTextString());
 
@@ -94,9 +92,11 @@ public class Ip181Spider extends BaseSpider {
             throw new MaybeBlockedException();
         }
 
+        LogManager.info("we will dispatch another Ip181Spider after " + time + " seconds");
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
+                LogManager.info("Ip181Spider now awaken,try get current Ip181 web proxies");
                 Helper.dispatchSpider(new Ip181Spider());
             }
         }, time * 1000);
@@ -109,26 +109,12 @@ public class Ip181Spider extends BaseSpider {
         HasAttributeFilter filter = new HasAttributeFilter("class", "table table-hover panel-default panel ctable");
         Node node = firstChildIfNullThrow(parser.extractAllNodesThatMatch(filter));
 
-        //LogManager.info(StringUtil.removeAllBlanks(node.toPlainTextString()));
         NodeList list = ParsingUtil.childrenOfType(node.getChildren(), TableRow.class);
         for (int i = 0; i < list.size(); i++) {
             parseIP(list.elementAt(i));
         }
     }
 
-    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-
-    public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }
-
-    //time: ��ÿ10���Ӹ���һ�Σ�17��ǰ���£� --> 每10分钟更新一次，17秒前更新
     private void parseIP(Node node) throws MaybeBlockedException
             , ParserException {
 
@@ -152,10 +138,10 @@ public class Ip181Spider extends BaseSpider {
     public static final String REG_PORT = "[0-9]+(?=\\s)";
     public static final Pattern PORT_PATTERN = Pattern.compile(REG_PORT);
 
-    public static final String REG_SECOND = "[0-9]+(?=��ǰ)";
+    public static final String REG_SECOND = "[0-9]+(?=秒)";
     public static final Pattern SECONDE = Pattern.compile(REG_SECOND);
 
-    public static final String REG_MINUTE = "(?<=Σ�)[0-9]+(?=����)";
+    public static final String REG_MINUTE = "(?<=，)[0-9]+(?=分钟)";
     public static final Pattern MINUTE_PATTERN = Pattern.compile(REG_MINUTE);
 
 
