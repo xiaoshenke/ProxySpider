@@ -1,6 +1,5 @@
 package wuxian.me.proxyspider;
 
-import com.sun.istack.internal.NotNull;
 import okhttp3.Call;
 import wuxian.me.spidercommon.log.LogManager;
 import wuxian.me.spidersdk.BaseSpider;
@@ -15,7 +14,7 @@ import java.io.IOException;
  */
 public class ProxySpiderCallback extends SpiderCallback {
 
-    public ProxySpiderCallback(@NotNull BaseSpider spider) {
+    public ProxySpiderCallback(BaseSpider spider) {
         super(spider);
     }
 

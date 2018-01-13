@@ -1,6 +1,5 @@
 package wuxian.me.proxyspider;
 
-import com.sun.istack.internal.NotNull;
 import okhttp3.Headers;
 import wuxian.me.proxyspider.xun.XunProxySpider;
 import wuxian.me.spidercommon.log.LogManager;
@@ -40,16 +39,14 @@ public class Helper {
         return false;
     }
 
-    public static void dispatchSpider(@NotNull BaseSpider spider) {
+    public static void dispatchSpider(BaseSpider spider) {
         IJob job = JobProvider.getJob();
         job.setRealRunnable(spider);
         jobManager().putJob(job);
     }
 
     public static void dispatchXunSpider() {
-
         if (shouldDispatchAotherRequest()) {
-
             //LogManager.info("success dispatchXunSpider");
             XunProxySpider spider = new XunProxySpider();
             dispatchSpider(spider);
@@ -87,7 +84,7 @@ public class Helper {
         return getCurrentPath() + "/cookie/cookies_" + spiderName;
     }
 
-    public static Headers getHeaderBySpecifyRef(@NotNull String reference, @NotNull String spiderName) {
+    public static Headers getHeaderBySpecifyRef(String reference, String spiderName) {
         if (!CookieManager.containsKey(spiderName)) {
             if (FileUtil.checkFileExist(getCookieFilePath(spiderName))) {
                 String content = FileUtil.readFromFile(getCookieFilePath(spiderName));
@@ -102,12 +99,12 @@ public class Helper {
         return builder.build();
     }
 
-    public static Headers getXunSpiderHeader(@NotNull String reference) {
+    public static Headers getXunSpiderHeader(String reference) {
         builder.set("Host", "www.xdaili.cn");
         return getHeaderBySpecifyRef(reference, "Xun");
     }
 
-    public static Headers getIp181SpiderHeader(@NotNull String reference) {
+    public static Headers getIp181SpiderHeader(String reference) {
         builder.set("Host", "www.ip181.com");
         return getHeaderBySpecifyRef(reference, "ip181");
     }
