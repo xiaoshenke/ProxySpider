@@ -7,3 +7,4 @@ target
 .idea/vcs.xml
 lib
 logs
+gen-javabean

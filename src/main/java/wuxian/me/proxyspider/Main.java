@@ -22,6 +22,8 @@ public class Main {
 
         JobManagerConfig.init();
 
+        JobManagerConfig.isAgent = false;
+        JobManagerConfig.isMaster = false;
         IJobManager jobManager = JobManagerFactory.getJobManager();
         jobManager.start();
 
