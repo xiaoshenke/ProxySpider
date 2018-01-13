@@ -4,7 +4,9 @@ import wuxian.me.proxyspider.ip181.Ip181Pool;
 import wuxian.me.proxyspider.xun.XunData;
 import wuxian.me.proxyspider.xun.XunProxyPool;
 import wuxian.me.spidercommon.log.LogManager;
-import wuxian.me.spidercommon.model.Proxy;
+
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import wuxian.me.spidermaster.biz.provider.IProvider;
 import wuxian.me.spidermaster.biz.provider.Provider;
 import wuxian.me.spidermaster.framework.common.GsonProvider;
@@ -23,7 +25,7 @@ public class ProxyProvider implements IProvider<String> {
         LogManager.info("in func ProxyProvider.provide");
         XunData xunData = XunProxyPool.getXunProxy();
         if (xunData != null) {
-            Proxy proxy = new Proxy(xunData.ip, Integer.parseInt(xunData.port));
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(xunData.ip, Integer.parseInt(xunData.port)));
             return GsonProvider.gson().toJson(proxy);
         }
 

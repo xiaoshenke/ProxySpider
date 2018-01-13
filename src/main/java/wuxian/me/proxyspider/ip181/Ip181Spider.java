@@ -12,7 +12,10 @@ import wuxian.me.proxyspider.Helper;
 import wuxian.me.proxyspider.ProxySpiderCallback;
 import wuxian.me.spidercommon.log.LogManager;
 import wuxian.me.spidercommon.model.HttpUrlNode;
-import wuxian.me.spidercommon.model.Proxy;
+//import wuxian.me.spidercommon.model.Proxy;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+
 import wuxian.me.spidercommon.util.ParsingUtil;
 import wuxian.me.spidercommon.util.StringUtil;
 import wuxian.me.spidersdk.BaseSpider;
@@ -137,7 +140,10 @@ public class Ip181Spider extends BaseSpider {
             return null;
         }
 
-        return new Proxy(matchedString(IP_PATTERN, s), matchedInteger(PORT_PATTERN, s.substring(index + ip.length())));
+        return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(matchedString(IP_PATTERN, s),
+                matchedInteger(PORT_PATTERN, s.substring(index + ip.length()))));
+
+        //return new Proxy(matchedString(IP_PATTERN, s), matchedInteger(PORT_PATTERN, s.substring(index + ip.length())));
     }
 
     public static final String REG_IP = "[0-9.]+(?=\\s)";

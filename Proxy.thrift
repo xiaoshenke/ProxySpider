@@ -1,12 +1,13 @@
 
 namespace java wuxian.me.proxyspider.thrift.proto
 
-struct Proxy {
+struct TProxy {
     1: string ip
     2: i32 port
 }
 
+//Todo:带一个len参数
 service ProxyService {
-  Proxy getProxy(),
+  TProxy getProxy(),
 }
 

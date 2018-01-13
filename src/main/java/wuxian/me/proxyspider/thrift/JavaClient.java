@@ -7,7 +7,7 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TSSLTransportFactory.TSSLTransportParameters;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
-import wuxian.me.proxyspider.thrift.proto.Proxy;
+import wuxian.me.proxyspider.thrift.proto.TProxy;
 import wuxian.me.proxyspider.thrift.proto.ProxyService;
 
 /**
@@ -55,7 +55,7 @@ public class JavaClient {
     }
 
     private static void perform(ProxyService.Client client) throws TException {
-        Proxy proxy = client.getProxy();
+        TProxy proxy = client.getProxy();
 
         System.out.println("JavaClient.perform " + proxy);
     }

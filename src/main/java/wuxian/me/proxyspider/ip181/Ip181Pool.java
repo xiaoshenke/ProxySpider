@@ -1,7 +1,9 @@
 package wuxian.me.proxyspider.ip181;
 
 import wuxian.me.spidercommon.log.LogManager;
-import wuxian.me.spidercommon.model.Proxy;
+//import wuxian.me.spidercommon.model.Proxy;
+
+import java.net.Proxy;
 
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;

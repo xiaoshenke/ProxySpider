@@ -2,34 +2,38 @@ package wuxian.me.proxyspider.thrift;
 
 import org.apache.thrift.TException;
 import wuxian.me.proxyspider.ip181.Ip181Pool;
-import wuxian.me.proxyspider.thrift.proto.Proxy;
+import wuxian.me.proxyspider.thrift.proto.TProxy;
 import wuxian.me.proxyspider.thrift.proto.ProxyService;
 import wuxian.me.proxyspider.xun.XunData;
 import wuxian.me.proxyspider.xun.XunProxyPool;
 import wuxian.me.spidercommon.log.LogManager;
+
+import java.net.InetSocketAddress;
 
 /**
  * Created by wuxian on 13/1/2018.
  */
 public class ThriftProxyService implements ProxyService.Iface {
 
-    public Proxy getProxy() throws TException {
+    public TProxy getProxy() throws TException {
 
         LogManager.info("in ThriftProxyService.getProxy");
         XunData xunData = XunProxyPool.getXunProxy();
         if (xunData != null) {
-            wuxian.me.spidercommon.model.Proxy proxy = new wuxian.me.spidercommon.model.Proxy(xunData.ip, Integer.parseInt(xunData.port));
-            Proxy p = new Proxy(proxy.ip, proxy.port);
+            //java.net.Proxy proxy = new java.net.Proxy(xunData.ip, Integer.parseInt(xunData.port));
+            TProxy p = new TProxy(xunData.ip, Integer.parseInt(xunData.port));
             return p;
         }
 
-        wuxian.me.spidercommon.model.Proxy proxy = Ip181Pool.getProxy();
+        java.net.Proxy proxy = Ip181Pool.getProxy();
         if (proxy == null) {
             LogManager.info("no proxy available,return null");
-            return new Proxy(null, -1);      //thrift不允许返回null
+            return new TProxy(null, -1);      //thrift不允许返回null
         }
         LogManager.info("provide return " + proxy.toString());
 
-        return new Proxy(proxy.ip, proxy.port);
+
+        InetSocketAddress ad = (InetSocketAddress) proxy.address();
+        return new TProxy(ad.getHostName(), ad.getPort());
     }
 }
