@@ -228,7 +228,7 @@ public class TProxy implements org.apache.thrift.TBase<TProxy, TProxy._Fields>, 
     if (that == null)
       return false;
     if (that instanceof TProxy)
-      return this.equals((TProxy) that);
+        return this.equals((TProxy) that);
     return false;
   }
 

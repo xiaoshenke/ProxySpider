@@ -12,13 +12,13 @@ public class ProxyService {
 
   public interface Iface {
 
-      public TProxy getProxy() throws org.apache.thrift.TException;
+    public java.util.List<TProxy> getProxy(int num) throws org.apache.thrift.TException;
 
   }
 
   public interface AsyncIface {
 
-      public void getProxy(org.apache.thrift.async.AsyncMethodCallback<TProxy> resultHandler) throws org.apache.thrift.TException;
+    public void getProxy(int num, org.apache.thrift.async.AsyncMethodCallback<java.util.List<TProxy>> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -42,19 +42,20 @@ public class ProxyService {
       super(iprot, oprot);
     }
 
-      public TProxy getProxy() throws org.apache.thrift.TException
+    public java.util.List<TProxy> getProxy(int num) throws org.apache.thrift.TException
     {
-      send_getProxy();
+      send_getProxy(num);
       return recv_getProxy();
     }
 
-    public void send_getProxy() throws org.apache.thrift.TException
+    public void send_getProxy(int num) throws org.apache.thrift.TException
     {
       getProxy_args args = new getProxy_args();
+      args.setNum(num);
       sendBase("getProxy", args);
     }
 
-      public TProxy recv_getProxy() throws org.apache.thrift.TException
+    public java.util.List<TProxy> recv_getProxy() throws org.apache.thrift.TException
     {
       getProxy_result result = new getProxy_result();
       receiveBase(result, "getProxy");
@@ -82,26 +83,30 @@ public class ProxyService {
       super(protocolFactory, clientManager, transport);
     }
 
-      public void getProxy(org.apache.thrift.async.AsyncMethodCallback<TProxy> resultHandler) throws org.apache.thrift.TException {
+    public void getProxy(int num, org.apache.thrift.async.AsyncMethodCallback<java.util.List<TProxy>> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getProxy_call method_call = new getProxy_call(resultHandler, this, ___protocolFactory, ___transport);
+      getProxy_call method_call = new getProxy_call(num, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-      public static class getProxy_call extends org.apache.thrift.async.TAsyncMethodCall<TProxy> {
-          public getProxy_call(org.apache.thrift.async.AsyncMethodCallback<TProxy> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+    public static class getProxy_call extends org.apache.thrift.async.TAsyncMethodCall<java.util.List<TProxy>> {
+      private int num;
+
+      public getProxy_call(int num, org.apache.thrift.async.AsyncMethodCallback<java.util.List<TProxy>> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
+        this.num = num;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getProxy", org.apache.thrift.protocol.TMessageType.CALL, 0));
         getProxy_args args = new getProxy_args();
+        args.setNum(num);
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-          public TProxy getResult() throws org.apache.thrift.TException {
+      public java.util.List<TProxy> getResult() throws org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new java.lang.IllegalStateException("Method call not finished!");
         }
@@ -148,7 +153,7 @@ public class ProxyService {
 
       public getProxy_result getResult(I iface, getProxy_args args) throws org.apache.thrift.TException {
         getProxy_result result = new getProxy_result();
-        result.success = iface.getProxy();
+        result.success = iface.getProxy(args.num);
         return result;
       }
     }
@@ -170,7 +175,7 @@ public class ProxyService {
       return processMap;
     }
 
-      public static class getProxy<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getProxy_args, TProxy> {
+    public static class getProxy<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getProxy_args, java.util.List<TProxy>> {
       public getProxy() {
         super("getProxy");
       }
@@ -179,10 +184,10 @@ public class ProxyService {
         return new getProxy_args();
       }
 
-          public org.apache.thrift.async.AsyncMethodCallback<TProxy> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+      public org.apache.thrift.async.AsyncMethodCallback<java.util.List<TProxy>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-              return new org.apache.thrift.async.AsyncMethodCallback<TProxy>() {
-                  public void onComplete(TProxy o) {
+        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<TProxy>>() {
+          public void onComplete(java.util.List<TProxy> o) {
             getProxy_result result = new getProxy_result();
             result.success = o;
             try {
@@ -226,8 +231,8 @@ public class ProxyService {
         return false;
       }
 
-          public void start(I iface, getProxy_args args, org.apache.thrift.async.AsyncMethodCallback<TProxy> resultHandler) throws org.apache.thrift.TException {
-        iface.getProxy(resultHandler);
+      public void start(I iface, getProxy_args args, org.apache.thrift.async.AsyncMethodCallback<java.util.List<TProxy>> resultHandler) throws org.apache.thrift.TException {
+        iface.getProxy(args.num, resultHandler);
       }
     }
 
@@ -236,14 +241,16 @@ public class ProxyService {
   public static class getProxy_args implements org.apache.thrift.TBase<getProxy_args, getProxy_args._Fields>, java.io.Serializable, Cloneable, Comparable<getProxy_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getProxy_args");
 
+    private static final org.apache.thrift.protocol.TField NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("num", org.apache.thrift.protocol.TType.I32, (short) 1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getProxy_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getProxy_argsTupleSchemeFactory();
 
+    private int num; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-;
+      NUM((short) 1, "num");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -258,6 +265,8 @@ public class ProxyService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
+          case 1: // NUM
+            return NUM;
           default:
             return null;
         }
@@ -296,9 +305,15 @@ public class ProxyService {
         return _fieldName;
       }
     }
+
+    // isset id assignments
+    private static final int __NUM_ISSET_ID = 0;
+    private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.NUM, new org.apache.thrift.meta_data.FieldMetaData("num", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getProxy_args.class, metaDataMap);
     }
@@ -306,10 +321,19 @@ public class ProxyService {
     public getProxy_args() {
     }
 
+    public getProxy_args(
+            int num) {
+      this();
+      this.num = num;
+      setNumIsSet(true);
+    }
+
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public getProxy_args(getProxy_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      this.num = other.num;
     }
 
     public getProxy_args deepCopy() {
@@ -318,15 +342,52 @@ public class ProxyService {
 
     //@Override
     public void clear() {
+      setNumIsSet(false);
+      this.num = 0;
+    }
+
+    public int getNum() {
+      return this.num;
+    }
+
+    public void setNum(int num) {
+      this.num = num;
+      setNumIsSet(true);
+    }
+
+    public void unsetNum() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __NUM_ISSET_ID);
+    }
+
+    /**
+     * Returns true if field num is set (has been assigned a value) and false otherwise
+     */
+    public boolean isSetNum() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __NUM_ISSET_ID);
+    }
+
+    public void setNumIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __NUM_ISSET_ID, value);
     }
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
+        case NUM:
+          if (value == null) {
+            unsetNum();
+          } else {
+            setNum((java.lang.Integer) value);
+          }
+        break;
+
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
+        case NUM:
+          return getNum();
+
       }
       throw new java.lang.IllegalStateException();
     }
@@ -338,11 +399,13 @@ public class ProxyService {
       }
 
       switch (field) {
+        case NUM:
+          return isSetNum();
       }
       throw new java.lang.IllegalStateException();
     }
 
-      //@Override
+    @Override
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -357,12 +420,23 @@ public class ProxyService {
       if (this == that)
         return true;
 
+      boolean this_present_num = true;
+      boolean that_present_num = true;
+      if (this_present_num || that_present_num) {
+        if (!(this_present_num && that_present_num))
+          return false;
+        if (this.num != that.num)
+          return false;
+      }
+
       return true;
     }
 
     @Override
     public int hashCode() {
       int hashCode = 1;
+
+      hashCode = hashCode * 8191 + num;
 
       return hashCode;
     }
@@ -375,6 +449,16 @@ public class ProxyService {
 
       int lastComparison = 0;
 
+      lastComparison = java.lang.Boolean.valueOf(isSetNum()).compareTo(other.isSetNum());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetNum()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.num, other.num);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -395,6 +479,9 @@ public class ProxyService {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("getProxy_args(");
       boolean first = true;
 
+      sb.append("num:");
+      sb.append(this.num);
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -414,6 +501,8 @@ public class ProxyService {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -438,6 +527,14 @@ public class ProxyService {
             break;
           }
           switch (schemeField.id) {
+            case 1: // NUM
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.num = iprot.readI32();
+                struct.setNumIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -451,6 +548,9 @@ public class ProxyService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(NUM_FIELD_DESC);
+        oprot.writeI32(struct.num);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -468,11 +568,24 @@ public class ProxyService {
       //@Override
       public void write(org.apache.thrift.protocol.TProtocol prot, getProxy_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetNum()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetNum()) {
+          oprot.writeI32(struct.num);
+        }
       }
 
       //@Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getProxy_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.num = iprot.readI32();
+          struct.setNumIsSet(true);
+        }
       }
     }
 
@@ -484,12 +597,12 @@ public class ProxyService {
   public static class getProxy_result implements org.apache.thrift.TBase<getProxy_result, getProxy_result._Fields>, java.io.Serializable, Cloneable, Comparable<getProxy_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getProxy_result");
 
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getProxy_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getProxy_resultTupleSchemeFactory();
 
-      private TProxy success; // required
+    private java.util.List<TProxy> success; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -554,7 +667,8 @@ public class ProxyService {
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
-              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TProxy.class)));
+              new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
+                      new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TProxy.class))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getProxy_result.class, metaDataMap);
     }
@@ -563,7 +677,7 @@ public class ProxyService {
     }
 
     public getProxy_result(
-            TProxy success)
+            java.util.List<TProxy> success)
     {
       this();
       this.success = success;
@@ -574,7 +688,11 @@ public class ProxyService {
      */
     public getProxy_result(getProxy_result other) {
       if (other.isSetSuccess()) {
-          this.success = new TProxy(other.success);
+        java.util.List<TProxy> __this__success = new java.util.ArrayList<TProxy>(other.success.size());
+        for (TProxy other_element : other.success) {
+          __this__success.add(new TProxy(other_element));
+        }
+        this.success = __this__success;
       }
     }
 
@@ -587,11 +705,26 @@ public class ProxyService {
       this.success = null;
     }
 
-      public TProxy getSuccess() {
+    public int getSuccessSize() {
+      return (this.success == null) ? 0 : this.success.size();
+    }
+
+    public java.util.Iterator<TProxy> getSuccessIterator() {
+      return (this.success == null) ? null : this.success.iterator();
+    }
+
+    public void addToSuccess(TProxy elem) {
+      if (this.success == null) {
+        this.success = new java.util.ArrayList<TProxy>();
+      }
+      this.success.add(elem);
+    }
+
+    public java.util.List<TProxy> getSuccess() {
       return this.success;
     }
 
-      public void setSuccess(TProxy success) {
+    public void setSuccess(java.util.List<TProxy> success) {
       this.success = success;
     }
 
@@ -616,7 +749,7 @@ public class ProxyService {
         if (value == null) {
           unsetSuccess();
         } else {
-            setSuccess((TProxy) value);
+          setSuccess((java.util.List<TProxy>)value);
         }
         break;
 
@@ -735,9 +868,6 @@ public class ProxyService {
     public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
-      if (success != null) {
-        success.validate();
-      }
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -775,9 +905,18 @@ public class ProxyService {
           }
           switch (schemeField.id) {
             case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                  struct.success = new TProxy();
-                struct.success.read(iprot);
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
+                  struct.success = new java.util.ArrayList<TProxy>(_list0.size);
+                  TProxy _elem1;
+                  for (int _i2 = 0; _i2 < _list0.size; ++_i2) {
+                    _elem1 = new TProxy();
+                    _elem1.read(iprot);
+                    struct.success.add(_elem1);
+                  }
+                  iprot.readListEnd();
+                }
                 struct.setSuccessIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -798,7 +937,13 @@ public class ProxyService {
         oprot.writeStructBegin(STRUCT_DESC);
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          struct.success.write(oprot);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
+            for (TProxy _iter3 : struct.success) {
+              _iter3.write(oprot);
+            }
+            oprot.writeListEnd();
+          }
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -824,7 +969,12 @@ public class ProxyService {
         }
         oprot.writeBitSet(optionals, 1);
         if (struct.isSetSuccess()) {
-          struct.success.write(oprot);
+          {
+            oprot.writeI32(struct.success.size());
+            for (TProxy _iter4 : struct.success) {
+              _iter4.write(oprot);
+            }
+          }
         }
       }
 
@@ -833,8 +983,16 @@ public class ProxyService {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-            struct.success = new TProxy();
-          struct.success.read(iprot);
+          {
+            org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.success = new java.util.ArrayList<TProxy>(_list5.size);
+            TProxy _elem6;
+            for (int _i7 = 0; _i7 < _list5.size; ++_i7) {
+              _elem6 = new TProxy();
+              _elem6.read(iprot);
+              struct.success.add(_elem6);
+            }
+          }
           struct.setSuccessIsSet(true);
         }
       }

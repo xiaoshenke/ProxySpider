@@ -10,6 +10,8 @@ import org.apache.thrift.protocol.TProtocol;
 import wuxian.me.proxyspider.thrift.proto.TProxy;
 import wuxian.me.proxyspider.thrift.proto.ProxyService;
 
+import java.util.List;
+
 /**
  * Created by wuxian on 13/1/2018.
  */
@@ -55,7 +57,7 @@ public class JavaClient {
     }
 
     private static void perform(ProxyService.Client client) throws TException {
-        TProxy proxy = client.getProxy();
+        List<TProxy> proxy = client.getProxy(1);
 
         System.out.println("JavaClient.perform " + proxy);
     }

@@ -6,8 +6,7 @@ struct TProxy {
     2: i32 port
 }
 
-//Todo:带一个len参数
 service ProxyService {
-  TProxy getProxy(),
+  list<TProxy> getProxy(1:i32 num),
 }
 
