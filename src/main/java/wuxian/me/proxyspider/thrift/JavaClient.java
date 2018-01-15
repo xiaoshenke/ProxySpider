@@ -57,7 +57,7 @@ public class JavaClient {
     }
 
     private static void perform(ProxyService.Client client) throws TException {
-        List<TProxy> proxy = client.getProxy(1);
+        List<TProxy> proxy = client.getProxy(10);
 
         System.out.println("JavaClient.perform " + proxy);
     }

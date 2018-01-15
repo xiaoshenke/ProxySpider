@@ -9,6 +9,7 @@ import wuxian.me.proxyspider.xun.XunProxyPool;
 //import wuxian.me.spidercommon.log.LogManager;
 
 import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,14 +40,15 @@ public class ThriftProxyService implements ProxyService.Iface {
         return new TProxy(ad.getHostName(), ad.getPort());
     }
 
-    //TODO:
     public List<TProxy> getProxy(int num) throws TException {
-        TProxy p = getProxy();
-
+        List<Proxy> proxys = Ip181Pool.getProxy(num);
+        System.out.println("try getProxy num: " + num + " return size: " + proxys.size());
         List<TProxy> list = new ArrayList<TProxy>();
-        if (p != null) {
-            list.add(p);
+        for (Proxy p : proxys) {
+            InetSocketAddress ad = (InetSocketAddress) p.address();
+            list.add(new TProxy(ad.getHostName(), ad.getPort()));
         }
+
         return list;
     }
 }
