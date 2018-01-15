@@ -1,8 +1,5 @@
 package wuxian.me.proxyspider.xun;
 
-import wuxian.me.proxyspider.Helper;
-import wuxian.me.spidercommon.log.LogManager;
-
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
@@ -29,7 +26,12 @@ public class XunProxyPool {
         return true;
     }
 
+    //TODO
     public static XunData getXunProxy() {
+
+        return null;
+
+        /*
         LogManager.info("xunproxy pool,current size:" + xunProxyQueue.size());
         if (xunProxyQueue.isEmpty()) {
             LogManager.info("xunPool is empty,try to dispatch XunSpider");
@@ -38,5 +40,6 @@ public class XunProxyPool {
         }
 
         return xunProxyQueue.poll();
+        */
     }
 }
