@@ -1,87 +1,93 @@
 package wuxian.me.proxyspider.ip181;
 
-import okhttp3.HttpUrl;
-import okhttp3.Request;
+import jdk.nashorn.internal.runtime.ParserException;
+import wuxian.me.easyexecution.biz.crawler.BaseCrawerJob;
+import wuxian.me.easyexecution.biz.crawler.util.*;
+
+
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.HasAttributeFilter;
 import org.htmlparser.tags.TableRow;
 import org.htmlparser.util.NodeList;
-import org.htmlparser.util.ParserException;
-import wuxian.me.proxyspider.Helper;
-import wuxian.me.proxyspider.ProxySpiderCallback;
-import wuxian.me.spidercommon.log.LogManager;
-import wuxian.me.spidercommon.model.HttpUrlNode;
-//import wuxian.me.spidercommon.model.Proxy;
+import wuxian.me.proxyspider.FetchProxyManager;
+
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-
-import wuxian.me.spidercommon.util.ParsingUtil;
-import wuxian.me.spidercommon.util.StringUtil;
-import wuxian.me.spidersdk.BaseSpider;
-import wuxian.me.spidersdk.SpiderCallback;
-import wuxian.me.spidersdk.anti.BytesCharsetDetector;
-import wuxian.me.spidersdk.anti.MaybeBlockedException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.regex.Pattern;
 
-import static wuxian.me.spidercommon.util.ParsingUtil.firstChildIfNullThrow;
-import static wuxian.me.spidercommon.util.ParsingUtil.matchedInteger;
-import static wuxian.me.spidercommon.util.ParsingUtil.matchedString;
+import static wuxian.me.easyexecution.biz.crawler.util.ParsingUtil.firstChildIfNullThrow;
+import static wuxian.me.easyexecution.biz.crawler.util.ParsingUtil.matchedInteger;
+import static wuxian.me.easyexecution.biz.crawler.util.ParsingUtil.matchedString;
 
 /**
- * Created by wuxian on 22/7/2017.
- * http://www.ip181.com/
+ * Created by wuxian on 15/1/2018.
  */
-public class Ip181Spider extends BaseSpider {
+public class Ip181Crawler extends BaseCrawerJob {
 
     private static String URL = "http://www.ip181.com/";
 
-    public static HttpUrlNode toUrlNode(Ip181Spider spider) {
-        HttpUrlNode node = new HttpUrlNode();
-        node.baseUrl = URL;
-        return node;
+    static {
+        //URL = "http://www.baidu.com";
     }
+    
+    
+    public void run() throws Exception {
 
-    public static Ip181Spider fromUrlNode(HttpUrlNode node) {
-        if (node.baseUrl.contains(URL)) {
-            return new Ip181Spider();
+        Map<String, String> pro = new HashMap<String,String>();
+        pro.put("Host", "www.ip181.com");
+        pro.put("Referer","http://www.ip181.com/");
+        pro.put("Cookie", CookieManager.get("ip181", FileUtil.getCurrentPath() + "/cookie/ip181_cookie"));
+        pro.put("Connection", "keep-alive");
+        pro.put("User-Agent", UserAgentManager.getAgent());
+
+        NetworkUtil.NetResponse res = null;
+        boolean success = true;
+
+        try {
+            res = NetworkUtil.sendHttpRequest(URL, "GET", pro);
+        } catch (IOException e) {
+            success = false;
+            e.printStackTrace();
+        } catch (Exception e) {
+            success = false;
+            e.printStackTrace();
         }
-        return null;
+
+        if (!success) {
+            //TODO:
+            return;
+        }
+
+        if (res.retCode != 200) {
+            //TODO:
+            return;
+        }
+
+        try {
+            parseRealData(res.body);
+        } catch (ParserException e) {
+            ;
+        }
     }
+    
 
-    protected SpiderCallback getCallback() {
-        return new ProxySpiderCallback(this);
-    }
-
-    protected Request buildRequest() {
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(URL)
-                .newBuilder();
-
-        Request request = new Request.Builder()
-                .headers(Helper.getIp181SpiderHeader("http://www.ip181.com/"))
-                .url(urlBuilder.build().toString())
-                .build();
-        return request;
-    }
-
-    private void parseTime(String data) throws MaybeBlockedException, ParserException {
+    private void parseTime(String data) throws org.htmlparser.util.ParserException{
 
         Parser parser = new Parser(data);
         parser.setEncoding("gb2312");
         HasAttributeFilter filter = new HasAttributeFilter("class", "gx");
         Node node = firstChildIfNullThrow(parser.extractAllNodesThatMatch(filter));
 
-        LogManager.info("time: " + StringUtil.removeAllBlanks(node.toPlainTextString()));
+        System.out.println("time: " + node.toPlainTextString());
         Integer minute = matchedInteger(MINUTE_PATTERN, node.toPlainTextString());
         Integer second = matchedInteger(SECONDE, node.toPlainTextString());
 
         if (minute == null && second == null) {
-            throw new MaybeBlockedException();
+            //throw new MaybeBlockedException();
+            return;
         }
 
         long time = 0;
@@ -94,21 +100,23 @@ public class Ip181Spider extends BaseSpider {
 
         time = 10 * 60 - time;
         if (time < 0) {
-            throw new MaybeBlockedException();
+            //throw new MaybeBlockedException();
+            return;
         }
 
-        LogManager.info("we will dispatch another Ip181Spider after " + time + " seconds");
+        System.out.println("we will dispatch another Ip181Spider after " + time + " seconds");
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                LogManager.info("Ip181Spider now awaken,try get current Ip181 web proxies");
-                Helper.dispatchSpider(new Ip181Spider());
+                System.out.println("Ip181Spider now awaken,try get current Ip181 web proxies");
+                //Helper.dispatchSpider(new Ip181Spider());
+                FetchProxyManager.dispatchSpider();
             }
         }, time * 1000);
 
     }
 
-    private List<Proxy> parseIPList(String data) throws MaybeBlockedException, ParserException {
+    private List<Proxy> parseIPList(String data) throws org.htmlparser.util.ParserException {
         Parser parser = new Parser(data);
         parser.setEncoding("gb2312");
         HasAttributeFilter filter = new HasAttributeFilter("class", "table table-hover panel-default panel ctable");
@@ -127,8 +135,7 @@ public class Ip181Spider extends BaseSpider {
         return proxyList;
     }
 
-    private Proxy parseIP(Node node) throws MaybeBlockedException
-            , ParserException {
+    private Proxy parseIP(Node node) throws ParserException {
 
         String s = node.toPlainTextString().trim();
         String ip = matchedString(IP_PATTERN, s);
@@ -158,17 +165,15 @@ public class Ip181Spider extends BaseSpider {
     public static final String REG_MINUTE = "(?<=，)[0-9]+(?=分钟)";
     public static final Pattern MINUTE_PATTERN = Pattern.compile(REG_MINUTE);
 
-
-    @Override
+    
     public int parseRealData(String data) {
         try {
             parseTime(data);
-
-
             List<Proxy> list = parseIPList(data);
 
             if (list.size() == 0) {
-                throw new MaybeBlockedException();
+                //throw new MaybeBlockedException();
+                return -1;
             }
 
             Ip181Pool.clear();
@@ -176,28 +181,10 @@ public class Ip181Spider extends BaseSpider {
                 Ip181Pool.put(p);
             }
 
-
-        } catch (MaybeBlockedException e) {
-            return BaseSpider.RET_MAYBE_BLOCK;
-
-        } catch (ParserException e) {
-            return BaseSpider.RET_PARSING_ERR;
+        } catch (org.htmlparser.util.ParserException e) {
+            return -1;
 
         }
-        return BaseSpider.RET_SUCCESS;
+        return 1;
     }
-
-    protected boolean checkBlockAndFailThisSpider(String s) {
-        LogManager.error(s);
-        return true;
-    }
-
-    public String name() {
-        return "Ip181Spider";
-    }
-
-    public String hashString() {
-        return name() + System.currentTimeMillis();
-    }
-
 }

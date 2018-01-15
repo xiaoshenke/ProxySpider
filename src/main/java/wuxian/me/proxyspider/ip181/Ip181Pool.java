@@ -1,6 +1,6 @@
 package wuxian.me.proxyspider.ip181;
 
-import wuxian.me.spidercommon.log.LogManager;
+//import wuxian.me.spidercommon.log.LogManager;
 //import wuxian.me.spidercommon.model.Proxy;
 
 import java.net.Proxy;
@@ -33,9 +33,9 @@ public class Ip181Pool {
     }
 
     public static Proxy getProxy() {
-        LogManager.info("Ip181 pool,current size:" + proxyQueue.size());
+        System.out.println("Ip181 pool,current size:" + proxyQueue.size());
         if (proxyQueue.isEmpty()) {
-            LogManager.info("Ip181Pool is empty");
+            System.out.println("Ip181Pool is empty");
             //Helper.dispatchXunSpider();
             return null;
         }

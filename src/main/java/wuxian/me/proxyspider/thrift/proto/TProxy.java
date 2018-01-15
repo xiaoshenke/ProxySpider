@@ -123,7 +123,7 @@ public class TProxy implements org.apache.thrift.TBase<TProxy, TProxy._Fields>, 
     return new TProxy(this);
   }
 
-  @Override
+  //@Override
   public void clear() {
     this.ip = null;
     setPortIsSet(false);
@@ -272,7 +272,7 @@ public class TProxy implements org.apache.thrift.TBase<TProxy, TProxy._Fields>, 
     return hashCode;
   }
 
-  @Override
+  //@Override
   public int compareTo(TProxy other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
@@ -427,7 +427,7 @@ public class TProxy implements org.apache.thrift.TBase<TProxy, TProxy._Fields>, 
 
   private static class TProxyTupleScheme extends org.apache.thrift.scheme.TupleScheme<TProxy> {
 
-    @Override
+    //@Override
     public void write(org.apache.thrift.protocol.TProtocol prot, TProxy struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
       java.util.BitSet optionals = new java.util.BitSet();
@@ -446,7 +446,7 @@ public class TProxy implements org.apache.thrift.TBase<TProxy, TProxy._Fields>, 
       }
     }
 
-    @Override
+    //@Override
     public void read(org.apache.thrift.protocol.TProtocol prot, TProxy struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
       java.util.BitSet incoming = iprot.readBitSet(2);
