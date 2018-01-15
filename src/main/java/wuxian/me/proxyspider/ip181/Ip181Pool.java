@@ -13,6 +13,8 @@ import java.util.concurrent.ArrayBlockingQueue;
  */
 public class Ip181Pool {
 
+    private static Object lock = new Object();
+
     private Ip181Pool() {
     }
 
@@ -24,12 +26,33 @@ public class Ip181Pool {
     }
 
     public static boolean put(Proxy proxy) {
-        if (proxy == null || xunDataSet.contains(proxy)) {
-            return false;
+        synchronized (lock) {
+            if (proxy == null || xunDataSet.contains(proxy)) {
+                return false;
+            }
+            proxyQueue.add(proxy);
+            xunDataSet.add(proxy);
+            return true;
         }
-        proxyQueue.add(proxy);
-        xunDataSet.add(proxy);
-        return true;
+
+    }
+
+    public static List<Proxy> getProxy(int num) {
+        synchronized (lock) {
+            System.out.println("Ip181 pool,current size:" + proxyQueue.size());
+            if (proxyQueue.isEmpty()) {
+                System.out.println("Ip181Pool is empty");
+                return new ArrayList<Proxy>();
+            }
+
+            int real = num >= proxyQueue.size() ? proxyQueue.size() : num;
+            List<Proxy> list = new ArrayList<Proxy>(real);
+            for (int i = 0; i < real; i++) {
+                list.add(proxyQueue.poll());
+            }
+
+            return list;
+        }
     }
 
     public static Proxy getProxy() {
